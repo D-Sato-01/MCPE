@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="titleContainer">
+  <p class="mainTitle">食事コスパ評価ツール</p>
+  <p class="subTitle">‐ MCPE: Meal Cost Performance Evaluator ‐</p>
+</div>
+<br><br>
+
+<div id="cal">
+
+  <div id="newCardButton">
+    <button id="js-show-popup"><b id="makeCard">新規カード作成</b></button>
+  </div>
+
+  <ul id="cardList" class="list-group"></ul>
+
+  <div class="popup" id="js-popup">
+    <div class="popup-inner">
+      <div class="close-btn" id="js-close-btn"><i class="fas fa-times"></i></div>
+      
+      <p><b>日付</b>：<input type="text" id="day"></p>
+      <p><b>時間価値</b>：<input type="number" v-model.number="timeValueH"><br>
+          　　　　　　＝分あたり：約{{ timeValueMRound }}円<br><br>
+
+      <p><b>――――――――――――― 朝食 ―――――――――――――</b></p>
+      <div class="divOfMeal">
+        <p>
+          <b>食事タイトル</b>：<input type="text" id="mealTitleForm_BF"><br>
+        </p><br>
+        
+        <b>金銭コスト</b>
+        <p>
+          ・食事費用 (円)：<input type="number" v-model.number="price_BF" id="priceForm_BF">
+        </P><br>
+
+        <b>時間コスト</b>
+        <p>
+          ・食事の前後で掛かった時間 (分)：<input type="number" v-model.number="time_BF" id="timeForm_BF"><br>
+          　　　　　　　　　　　　　　　　＝時間コスト：{{ timeCost_BFRound }}<br>
+        </p><br>
+
+        <b>心体コスト</b><br>
+        <p>
+          ・疲労度：
+          <select v-model.number="energyCost_BF" id="energyForm_BF">
+            <option v-for="option in enerOptions_BF" v-bind:value="option.value">
+            {{ option.text }}
+            </option>
+          </select>
+        </p><br>
+
+        <b>栄養</b>
+        <p>
+          ・主食：
+          <select v-model.number="selectedNutri1_BF" id="nutriForm1_BF">
+            <option disabled value="">-</option>
+            <option>0</option>
+            <option>0.5</option>
+            <option>1</option>
+            <option>1.5</option>
+            <option>2</option>
+            <option>2.5</option>
+            <option>3</option>
+            <option>3.5</option>
+            <option>4</option>
+
+          </select><br>
+          ・副菜：
+          <select v-model.number="selectedNutri2_BF" id="nutriForm2_BF">
+            <option disabled value="">-</option>
+            <option>0</option>
+            <option>0.5</option>
+            <option>1</option>
+            <option>1.5</option>
+            <option>2</option>
+            <option>2.5</option>
+            <option>3</option>
+            <option>3.5</option>
+            <option>4</option>
+
+          </select><br>
+          ・主菜：
+          <select v-model.number="selectedNutri3_BF" id="nutriForm3_BF">
+            <option disabled value="">-</option>
+            <option>0</option>
+            <option>0.5</option>
+            <option>1</option>
+            <option>1.5</option>
+            <option>2</option>
+            <option>2.5</option>
+            <option>3</option>
+          </select><br>
+          ・乳製品：
+          <select v-model.number="selectedNutri4_BF" id="nutriForm4_BF">
+            <option disabled value="">-</option>
+            <option>0</option>
+            <option>0.5</option>
+            <option>1</option>
+            <option>1.5</option>
+            <option>2</option>
+          </select><br>
+          ・果物：
+          <select v-model.number="selectedNutri5_BF" id="nutriForm5_BF">
+            <option disabled value="">-</option>
+            <option>0</option>
+            <option>0.5</option>
+            <option>1</option>
+            <option>1.5</option>
+            <option>2</option>
+          </select><br>
+        </p><br>
+
+        <b>満足度</b><br>
+        <p>・満足度：
+          <select v-model.number="satisfaction_BF" id="satisForm_BF">
+            <option v-for="option in satisOptions_BF" v-bind:value="option.value">
+            {{ option.text }}
+            </option>
+          </select>
+        </p><br>
+      </div>
+
+      
+      <br><p><b>――――――――――――― 昼食 ―――――――――――――</b></p>
+      <div class="divOfMeal">
+        <p>
+          <b>食事タイトル</b>：<input type="text" id="mealTitleForm_lunch"><br>
+        </p><br>
+        
+        <b>金銭コスト</b>
+        <p>
+          ・食事費用 (円)：<input type="number" v-model.number="price_lunch" id="priceForm_lunch">
+        </P><br>
+
+        <b>時間コスト</b>
+        <p>
+          ・食事の前後で掛かった時間 (分)：<input type="number" v-model.number="time_lunch" id="timeForm_lunch"><br>
+          　　　　　　　　　　　　　　　　＝時間コスト：{{ timeCost_lunchRound }}<br>
+        </p><br>
+
+        <b>心体コスト</b><br>
+        <p>
+          ・疲労度：
+          <select v-model.number="energyCost_lunch" id="energyForm_lunch">
+            <option v-for="option in enerOptions_lunch" v-bind:value="option.value">
+            {{ option.text }}
+            </option>
+          </select>
+        </p><br>
+
+        <b>栄養</b>
+        <p>
+          ・主食：
+          <select v-model.number="selectedNutri1_lunch" id="nutriForm1_lunch">
+            <option disabled value="">-</option>
+            <option>0</option>
+            <option>0.5</option>
+            <option>1</option>
+            <option>1.5</option>
+            <option>2</option>
+            <option>2.5</option>
+            <option>3</option>
+            <option>3.5</option>
+            <option>4</option>
+
+          </select><br>
+          ・副菜：
+          <select v-model.number="selectedNutri2_lunch" id="nutriForm2_lunch">
+            <option disabled value="">-</option>
+            <option>0</option>
+            <option>0.5</option>
+            <option>1</option>
+            <option>1.5</option>
+            <option>2</option>
+            <option>2.5</option>
+            <option>3</option>
+            <option>3.5</option>
+            <option>4</option>
+
+          </select><br>
+          ・主菜：
+          <select v-model.number="selectedNutri3_lunch" id="nutriForm3_lunch">
+            <option disabled value="">-</option>
+            <option>0</option>
+            <option>0.5</option>
+            <option>1</option>
+            <option>1.5</option>
+            <option>2</option>
+            <option>2.5</option>
+            <option>3</option>
+          </select><br>
+          ・乳製品：
+          <select v-model.number="selectedNutri4_lunch" id="nutriForm4_lunch">
+            <option disabled value="">-</option>
+            <option>0</option>
+            <option>0.5</option>
+            <option>1</option>
+            <option>1.5</option>
+            <option>2</option>
+          </select><br>
+          ・果物：
+          <select v-model.number="selectedNutri5_lunch" id="nutriForm5_lunch">
+            <option disabled value="">-</option>
+            <option>0</option>
+            <option>0.5</option>
+            <option>1</option>
+            <option>1.5</option>
+            <option>2</option>
+          </select><br>
+        </p><br>
+
+        <b>満足度</b><br>
+        <p>・満足度：
+          <select v-model.number="satisfaction_lunch" id="satisForm_lunch">
+            <option v-for="option in satisOptions_lunch" v-bind:value="option.value">
+            {{ option.text }}
+            </option>
+          </select>
+        </p><br>
+      </div>
+
+
+      <br><p><b>――――――――――――― 夕食 ―――――――――――――</b></p>
+      <div class="divOfMeal">
+        <p>
+          <b>食事タイトル</b>：<input type="text" id="mealTitleForm_dinner"><br>
+        </p><br>
+        
+        <b>金銭コスト</b>
+        <p>
+          ・食事費用 (円)：<input type="number" v-model.number="price_dinner" id="priceForm_dinner">
+        </P><br>
+
+        <b>時間コスト</b>
+        <p>
+          ・食事の前後で掛かった時間 (分)：<input type="number" v-model.number="time_dinner" id="timeForm_dinner"><br>
+          　　　　　　　　　　　　　　　　＝時間コスト：{{ timeCost_dinnerRound }}<br>
+        </p><br>
+
+        <b>心体コスト</b><br>
+        <p>
+          ・疲労度：
+          <select v-model.number="energyCost_dinner" id="energyForm_dinner">
+            <option v-for="option in enerOptions_dinner" v-bind:value="option.value">
+            {{ option.text }}
+            </option>
+          </select>
+        </p><br>
+
+        <b>栄養</b>
+        <p>
+          ・主食：
+          <select v-model.number="selectedNutri1_dinner" id="nutriForm1_dinner">
+            <option disabled value="">-</option>
+            <option>0</option>
+            <option>0.5</option>
+            <option>1</option>
+            <option>1.5</option>
+            <option>2</option>
+            <option>2.5</option>
+            <option>3</option>
+            <option>3.5</option>
+            <option>4</option>
+
+          </select><br>
+          ・副菜：
+          <select v-model.number="selectedNutri2_dinner" id="nutriForm2_dinner">
+            <option disabled value="">-</option>
+            <option>0</option>
+            <option>0.5</option>
+            <option>1</option>
+            <option>1.5</option>
+            <option>2</option>
+            <option>2.5</option>
+            <option>3</option>
+            <option>3.5</option>
+            <option>4</option>
+
+          </select><br>
+          ・主菜：
+          <select v-model.number="selectedNutri3_dinner" id="nutriForm3_dinner">
+            <option disabled value="">-</option>
+            <option>0</option>
+            <option>0.5</option>
+            <option>1</option>
+            <option>1.5</option>
+            <option>2</option>
+            <option>2.5</option>
+            <option>3</option>
+          </select><br>
+          ・乳製品：
+          <select v-model.number="selectedNutri4_dinner" id="nutriForm4_dinner">
+            <option disabled value="">-</option>
+            <option>0</option>
+            <option>0.5</option>
+            <option>1</option>
+            <option>1.5</option>
+            <option>2</option>
+          </select><br>
+          ・果物：
+          <select v-model.number="selectedNutri5_dinner" id="nutriForm5_dinner">
+            <option disabled value="">-</option>
+            <option>0</option>
+            <option>0.5</option>
+            <option>1</option>
+            <option>1.5</option>
+            <option>2</option>
+          </select><br>
+        </p><br>
+
+        <b>満足度</b><br>
+        <p>・満足度：
+          <select v-model.number="satisfaction_dinner" id="satisForm_dinner">
+            <option v-for="option in satisOptions_dinner" v-bind:value="option.value">
+            {{ option.text }}
+            </option>
+          </select>
+        </p><br>
+      </div>
+
+      <br><p><b>―――――――――――――――――――――――――――――</b></p>
+      <b>スコア</b><br>
+      算出された数値が小さいほどコスパがよい<br>
+      <p>{({{priceTotal}} + {{timeCostTHRDivHnd}}) × {{energyCostAVGHRDivHnd}} } ÷ {{nutriScoreTHRDivHnd}} × {{satisAVGHRDivHnd}} = <b>{{totalScoreRound}}</b></p>
+
+      <div id="genCardButton">
+        <br><button onclick="addList()" v-on:mouseover="changeScoreValue" id="addCard"><b id="genCard">カード生成</b></button>
+      </div>
+      <p><input v-model="totalScoreValue" id="totalScoreBox" type="hidden"></p>
+
+    </div>
+    <div class="black-background" id="js-black-bg"></div>
+  </div>
+</div>
+
+
+<script>
+var i = 1 ;
+
+function addList() {
+  var day = document.getElementById("day").value;
+	var mealTitleForm_BF = document.getElementById("mealTitleForm_BF").value;
+  var mealTitleForm_lunch = document.getElementById("mealTitleForm_lunch").value;
+  var mealTitleForm_dinner = document.getElementById("mealTitleForm_dinner").value;
+	var cardScore = document.getElementById("totalScoreBox").value;
+
+  var dayText = document.createTextNode(day);
+	var mealTitleFormText_BF = document.createTextNode(mealTitleForm_BF);
+  var mealTitleFormText_lunch = document.createTextNode(mealTitleForm_lunch,);
+  var mealTitleFormText_dinner = document.createTextNode(mealTitleForm_dinner);
+	var cardScoreText = document.createTextNode(cardScore);
+
+	var newList = document.createElement("li");
+	newList.className = "list-group-item";
+  newList.id = 'card_' + i;
+
+  var newDay = document.createElement("p");
+  newDay.className = "newDay";
+  newDay.id = 'day_' + i;
+	newDay.appendChild(dayText);
+
+	var newMealTitle_BF = document.createElement("p");
+  newMealTitle_BF.className = "newMealTitle";
+  newMealTitle_BF.id = 'title1_' + i;
+	newMealTitle_BF.appendChild(mealTitleFormText_BF);
+
+  var newMealTitle_lunch = document.createElement("p");
+  newMealTitle_lunch.className = "newMealTitle";
+  newMealTitle_lunch.id = 'title2_' + i;
+	newMealTitle_lunch.appendChild(mealTitleFormText_lunch);
+
+  var newMealTitle_dinner = document.createElement("p");
+  newMealTitle_dinner.className = "newMealTitle";
+  newMealTitle_dinner.id = 'title3_' + i;
+	newMealTitle_dinner.appendChild(mealTitleFormText_dinner);
+
+	var newCardScore = document.createElement("p");
+  newCardScore.className = "newScore";
+  newCardScore.id = 'newScore_' + i;
+	newCardScore.appendChild(cardScoreText);
+
+  newList.appendChild(newDay);
+	newList.appendChild(newMealTitle_BF);
+  newList.appendChild(newMealTitle_lunch);
+  newList.appendChild(newMealTitle_dinner);
+	newList.appendChild(newCardScore);
+	document.getElementById("cardList").appendChild(newList);
+
+  i++ ;
+}
+addList();
+
+</script>
+
+</body>
+</html>
