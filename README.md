@@ -1,6 +1,6 @@
 # MCPE
-<b>Q．ここは何ですか？</b><br>
-　A．当リポジトリにはMCPE（<b>https://mcpe7.herokuapp.com</b>）を構成している主要なファイルを閲覧用に置いています。
+<b>当リポジトリについて</b><br>
+　ここにはMCPE（<b>https://mcpe7.herokuapp.com</b>）を構成している主要なファイルを閲覧用に置いています。
 
 <br>
 
